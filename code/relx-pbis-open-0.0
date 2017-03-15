@@ -12,6 +12,7 @@ domain_conf=`/opt/pbis/bin/config --show UserDomainPrefix | grep newlexis.net`
 login_domain_conf= `/opt/pbis/bin/config --show AssumeDefaultDomain | grep true`
 assume_domain=true
 cloud=`/opt/aws/bin/ec2-metadata | grep keyname | cut -d : -f2`
+sudo_template=/usr/local/share/domain_admin
 
 # Make sure that PBIS is installed
 if ! rpm -qa | grep -qw pbis-open; then
@@ -78,8 +79,8 @@ echo "`date -u ` Domain join failed check log $dom_join_log" >> $dom_join_log
 exit 1; 
 fi
 
-# Setup Login access based on group membership
-echo "`date -u` Setting up group based login access for host using key $cloud" >> $dom_join_log;
+# Setup Login and sudo access based on group membership
+echo "`date -u` Setting up group based login and Sudo access for host using key $cloud" >> $dom_join_log;
 case "$cloud" in 
 
 product-nl-dev) 
