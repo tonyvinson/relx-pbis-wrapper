@@ -53,16 +53,17 @@ joined=`domainjoin-cli query | grep Domain | cut -d ' ' -f3`
 if [[ $(fgrep -ix $domain <<< $joined) ]]; then
 
 # Set default user shell to bash
-if [[ $(fgrep -ix $shell_conf <<< $shell) ]]; then
-#  if [ "$shell_conf" != "$shell" ]; then
-   echo "`date -u ` User shell is already set to $shell" >> $dom_join_log;
+#if [[ $(fgrep -ix $shell_conf <<< $shell) ]]; then
+  if [ "$shell_conf" != "$shell" ]; then
+  echo "`date -u ` User shell is already set to $shell" >> $dom_join_log;
   else   
   echo "`date -u ` Setting Default User shell to $shell" >> $dom_join_log
   /opt/pbis/bin/config LoginShellTemplate $shell
   fi 
 
 # Set user login Domain Prefix
-if [[ $(fgrep -ix $domain_conf <<< $domain) ]]; then
+#if [[ $(fgrep -ix $domain_conf <<< $domain) ]]; then
+  if [ "$domain_conf" != "$domain" ]; then
    echo "`date -u ` Default user domain is already set to $domain" >> $dom_join_log;
   else
   echo "`date -u ` Setting Default User domain to $domain" >> $dom_join_log
@@ -70,7 +71,8 @@ if [[ $(fgrep -ix $domain_conf <<< $domain) ]]; then
   fi
 
 # Set Assume default domain to true
-if [[ $(fgrep -ix $login_domain_conf <<< $assume_domain) ]]; then
+#if [[ $(fgrep -ix $login_domain_conf <<< $assume_domain) ]]; then
+  if [ "$login_domain_conf" != "$assume_domain" ]; then
    echo "`date -u ` Assume default domain is already set to $assume_domain" >> $dom_join_log;
   else
   echo "`date -u ` Setting assume default domain to $assume_domain" >> $dom_join_log
