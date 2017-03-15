@@ -1,0 +1,149 @@
+#!/bin/bash
+
+service=lwsmd
+domain=newlexis.net
+ou=Servers/LNG/NewLexis
+dom_user=ln-svc-DomJoiner
+dom_pass=\!\!J10ner
+dom_join_log=/usr/local/tmp/domain_join.log
+shell=/bin/bash
+shell_conf=`/opt/pbis/bin/config --show LoginShellTemplate | grep bash`
+domain_conf=`/opt/pbis/bin/config --show UserDomainPrefix | grep newlexis.net`
+login_domain_conf= `/opt/pbis/bin/config --show AssumeDefaultDomain | grep true`
+assume_domain=true
+cloud=`/opt/aws/bin/ec2-metadata | grep keyname | cut -d : -f2`
+sudo_template=/usr/local/share/domain_admin
+
+# Make sure that PBIS is installed
+if ! rpm -qa | grep -qw pbis-open; then
+    yum -y install pbis-open
+      if [ $? == 0 ]; then 
+      echo "`date -u ` pbis-open was installed" > $dom_join_log 
+      else 
+      echo "`date -u ` Please ensure that pbis-open exists in your repository" >> $dom_join_log
+      exit 1; 
+      fi 
+else 
+echo "`date -u ` pbis-open already installed" > $dom_join_log
+fi
+
+# Ensure that the PBIS Service is running
+if (( $(ps -ef | grep -v grep | grep $service | wc -l) > 0 ))
+then
+echo "`date -u ` PBIS is running!!!" >> $dom_join_log
+else
+echo "`date -u ` Starting PBIS !!!" >> $dom_join_log
+/etc/init.d/$service start
+fi
+
+# Join the domain if not joined exit if joined
+
+joined=`domainjoin-cli query | grep Domain | cut -d ' ' -f3`
+
+if [[ $(fgrep -ix $domain <<< $joined) ]]; then
+    echo "`date -u ` This host is already joined to $domain" >> $dom_join_log;
+else
+domainjoin-cli  --logfile $dom_join_log --loglevel verbose join --ou $ou $domain $dom_user $dom_pass
+sleep 20 
+fi
+
+#Verify Domin Join
+joined=`domainjoin-cli query | grep Domain | cut -d ' ' -f3`
+if [[ $(fgrep -ix $domain <<< $joined) ]]; then
+
+# Set default user shell to bash
+  if [ "$shell_conf" != "$shell" ]; then
+   echo "`date -u ` User shell is already set to $shell" >> $dom_join_log;
+  else   
+  echo "`date -u ` Setting Default User shell to $shell" >> $dom_join_log
+  /opt/pbis/bin/config LoginShellTemplate $shell
+  fi 
+
+# Set user login Domain Prefix
+  if [ "$domain_conf" != "$domain" ]; then
+   echo "`date -u ` Default user domain is already set to $domain" >> $dom_join_log;
+  else
+  echo "`date -u ` Setting Default User domain to $domain" >> $dom_join_log
+  /opt/pbis/bin/config UserDomainPrefix $domain
+  fi
+
+# Set Assume default domain to true
+  if [ "$login_domain_conf" != "$assume_domain" ]; then
+   echo "`date -u ` Assume default domain is already set to $assume_domain" >> $dom_join_log;
+  else
+  echo "`date -u ` Setting assume default domain to $assume_domain" >> $dom_join_log
+  /opt/pbis/bin/config AssumeDefaultDomain $assume_domain
+  fi
+else
+echo "`date -u ` Domain join failed check log $dom_join_log" >> $dom_join_log
+exit 1; 
+fi
+
+# Setup Login and sudo access based on group membership
+echo "`date -u` Setting up group based login and Sudo access for host using key $cloud" >> $dom_join_log;
+case "$cloud" in 
+
+product-nl-dev) 
+  ad_group1=LN-NewLexis-Prod-L1
+  ad_group2=LN-NewLexis-Prod-L2
+/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
+#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+;;
+
+product-nl-cert)
+  ad_group1=LN-NewLexis-Prod-L1
+  ad_group2=LN-NewLexis-Prod-L2
+/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
+#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+;;
+
+product-nl-prod)
+  ad_group1=LN-NewLexis-Prod-L1
+  ad_group2=LN-NewLexis-Prod-L2
+/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
+#echo "$domain\\$ad_group1 $domain\\$ad_group2" 
+;;
+
+operations-nl-dev)
+  ad_group1=LN-NewLexis-Prod-L1
+  ad_group2=LN-NewLexis-Prod-L2
+/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
+#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+;;
+
+operations-nl-cert)
+  ad_group1=LN-NewLexis-Prod-L1
+  ad_group2=LN-NewLexis-Prod-L2
+/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
+#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+;;
+
+operations-nl-prod)
+  ad_group1=LN-NewLexis-Prod-L1
+  ad_group2=LN-NewLexis-Prod-L2
+/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
+#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+;;
+
+monitoring-nl-dev)
+  ad_group1=LN-NewLexis-Prod-L1
+  ad_group2=LN-NewLexis-Prod-L2
+/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
+#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+;;
+
+monitoring-nl-cert)
+  ad_group1=LN-NewLexis-Prod-L1
+  ad_group2=LN-NewLexis-Prod-L2
+/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
+#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+;;
+
+monitoring-nl-prod)
+  ad_group1=LN-NewLexis-Prod-L1
+  ad_group2=LN-NewLexis-Prod-L2
+/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
+#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+;;
+#/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
+esac

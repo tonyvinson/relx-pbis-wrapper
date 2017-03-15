@@ -1,2 +1,0 @@
-	# Group rules for Active Directory Groups
-%newlexis.net\\domain^admins ALL=(ALL) ALL
