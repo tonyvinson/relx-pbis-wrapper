@@ -13,10 +13,11 @@ login_domain_conf= `/opt/pbis/bin/config --show AssumeDefaultDomain | grep true`
 assume_domain=true
 cloud=`/opt/aws/bin/ec2-metadata | grep keyname | cut -d : -f2`
 sudo_template=/usr/local/share/domain_admin
+package="pbis-open-8.5.2-265.x86_64.rpm pbis-open-upgrade-8.5.2-265.x86_64.rpm"
 
 # Make sure that PBIS is installed
 if ! rpm -qa | grep -qw pbis-open; then
-    yum -y install pbis-open
+    yum -y install $package
       if [ $? == 0 ]; then 
       echo "`date -u ` pbis-open was installed" > $dom_join_log 
       else 
@@ -81,12 +82,12 @@ fi
 
 # Setup Login and sudo access based on group membership
 echo "`date -u` Setting up group based login and Sudo access for host using key $cloud" >> $dom_join_log;
-#Backup sudoers $domain_admin if it exists
-if [ -f /etc/sudoers.d/$domain_admin ]; then
-  cp  /etc/sudoers.d/$domain_admin  /etc/sudoers.d/$domain_admin.bak
-  echo "`date -u ` Backing up existing /etc/sudoers.d/$domain_admin to /etc/sudoers.d/$domain_admin.bak" >> $dom_join_log
+#Backup sudoers ${cloud}_admin if it exists
+if [ -f /etc/sudoers.d/${cloud}_admin ]; then
+  cp  /etc/sudoers.d/${cloud}_admin  /etc/sudoers.d/${cloud}_admin.bak
+  echo "`date -u ` Backing up existing /etc/sudoers.d/${cloud}_admin to /etc/sudoers.d/${cloud}_admin.bak" >> $dom_join_log
 fi  
-  cp  $sudo_template  /etc/sudoers.d/$domain_admin
+  cp  $sudo_template  /etc/sudoers.d/${cloud}_admin
 
 case "$cloud" in 
 
@@ -94,72 +95,72 @@ product-nl-dev)
   ad_group1=LN-NewLexis-Dev-L1
   ad_group2=LN-NewLexis-Dev-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
-echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 product-nl-cert)
   ad_group1=LN-NewLexis-Cert-L1
   ad_group2=LN-NewLexis-Cert-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
-echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 product-nl-prod)
   ad_group1=LN-NewLexis-Prod-L1
   ad_group2=LN-NewLexis-Prod-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
-echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 operations-nl-dev)
   ad_group1=LN-NewLexis-Dev-L1
   ad_group2=LN-NewLexis-Dev-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
-echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 operations-nl-cert)
   ad_group1=LN-NewLexis-Cert-L1
   ad_group2=LN-NewLexis-Cert-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
-echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 operations-nl-prod)
   ad_group1=LN-NewLexis-Prod-L1
   ad_group2=LN-NewLexis-Prod-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
-echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 monitoring-nl-dev)
   ad_group1=LN-NewLexis-Dev-L1
   ad_group2=LN-NewLexis-Dev-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
-echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 monitoring-nl-cert)
   ad_group1=LN-NewLexis-Cert-L1
   ad_group2=LN-NewLexis-Cert-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
-echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 monitoring-nl-prod)
   ad_group1=LN-NewLexis-Prod-L1
   ad_group2=LN-NewLexis-Prod-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
-echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 #/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
 esac
