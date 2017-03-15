@@ -81,69 +81,85 @@ fi
 
 # Setup Login and sudo access based on group membership
 echo "`date -u` Setting up group based login and Sudo access for host using key $cloud" >> $dom_join_log;
+#Backup sudoers $domain_admin if it exists
+if [ -f /etc/sudoers.d/$domain_admin ]; then
+  cp  /etc/sudoers.d/$domain_admin  /etc/sudoers.d/$domain_admin.bak
+  echo "`date -u ` Backing up existing /etc/sudoers.d/$domain_admin to /etc/sudoers.d/$domain_admin.bak" >> $dom_join_log
+fi  
+  cp  $sudo_template  /etc/sudoers.d/$domain_admin
+
 case "$cloud" in 
 
 product-nl-dev) 
-  ad_group1=LN-NewLexis-Prod-L1
-  ad_group2=LN-NewLexis-Prod-L2
+  ad_group1=LN-NewLexis-Dev-L1
+  ad_group2=LN-NewLexis-Dev-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
 ;;
 
 product-nl-cert)
-  ad_group1=LN-NewLexis-Prod-L1
-  ad_group2=LN-NewLexis-Prod-L2
+  ad_group1=LN-NewLexis-Cert-L1
+  ad_group2=LN-NewLexis-Cert-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
 ;;
 
 product-nl-prod)
   ad_group1=LN-NewLexis-Prod-L1
   ad_group2=LN-NewLexis-Prod-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 $domain\\$ad_group2" 
+#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
 ;;
 
 operations-nl-dev)
-  ad_group1=LN-NewLexis-Prod-L1
-  ad_group2=LN-NewLexis-Prod-L2
+  ad_group1=LN-NewLexis-Dev-L1
+  ad_group2=LN-NewLexis-Dev-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
 ;;
 
 operations-nl-cert)
-  ad_group1=LN-NewLexis-Prod-L1
-  ad_group2=LN-NewLexis-Prod-L2
+  ad_group1=LN-NewLexis-Cert-L1
+  ad_group2=LN-NewLexis-Cert-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
 ;;
 
 operations-nl-prod)
   ad_group1=LN-NewLexis-Prod-L1
   ad_group2=LN-NewLexis-Prod-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
 ;;
 
 monitoring-nl-dev)
-  ad_group1=LN-NewLexis-Prod-L1
-  ad_group2=LN-NewLexis-Prod-L2
+  ad_group1=LN-NewLexis-Dev-L1
+  ad_group2=LN-NewLexis-Dev-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
 ;;
 
 monitoring-nl-cert)
-  ad_group1=LN-NewLexis-Prod-L1
-  ad_group2=LN-NewLexis-Prod-L2
+  ad_group1=LN-NewLexis-Cert-L1
+  ad_group2=LN-NewLexis-Cert-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
 ;;
 
 monitoring-nl-prod)
   ad_group1=LN-NewLexis-Prod-L1
   ad_group2=LN-NewLexis-Prod-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "$domain\\$ad_group1 $domain\\$ad_group2"
+#echo "$domain\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
+echo "$domain\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/$domain_admin
 ;;
 #/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
 esac
