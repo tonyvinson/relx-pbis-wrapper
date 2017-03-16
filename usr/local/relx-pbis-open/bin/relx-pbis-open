@@ -9,7 +9,6 @@ case "$1" in
 service=lwsmd
 domain=newlexis.net
 domain_nb=NEWLEXIS
-ou=Servers/LNG/NewLexis/$lifecycle
 dom_user=ln-svc-DomJoiner
 dom_pass=\!\!J10ner
 dom_join_log=/usr/local/relx-pbis-open/tmp/domain_join.log
@@ -17,6 +16,7 @@ shell=/bin/bash
 assume_domain=true
 cloud=`/opt/aws/bin/ec2-metadata | grep keyname | cut -d : -f2`
 lifecycle=`/opt/aws/bin/ec2-metadata | grep keyname | cut -d : -f2 |cut -d - -f3`
+ou=Servers/LNG/NewLexis/$lifecycle
 sudo_template=/usr/local/relx-pbis-open/share/domain_admin
 package1="/usr/local/relx-pbis-open/share/pbis-open-8.5.2-265.x86_64.rpm"
 package2="/usr/local/relx-pbis-open/share/pbis-open-upgrade-8.5.2-265.x86_64.rpm"
