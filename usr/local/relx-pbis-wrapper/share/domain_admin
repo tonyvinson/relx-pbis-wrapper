@@ -1,2 +1,0 @@
-	# Group rules for Active Directory Groups
-%NEWLEXIS\\domain^admins ALL=(ALL:ALL) ALL

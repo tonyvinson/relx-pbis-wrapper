@@ -1,2 +1,0 @@
-#!/bin/bash
-/sbin/chkconfig relx-pbis-wrapper on
