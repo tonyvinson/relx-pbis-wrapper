@@ -16,6 +16,12 @@ cloud=`/opt/aws/bin/ec2-metadata | grep keyname | cut -d : -f2`
 sudo_template=/usr/local/share/domain_admin
 package="pbis-open-8.5.2-265.x86_64.rpm pbis-open-upgrade-8.5.2-265.x86_64.rpm"
 
+#########TEST##########
+mkdir -p /usr/local/share
+mkdir -p /usr/local/tmp
+cp usr/local/share/* /usr/local/share
+########END TEST##############
+
 # Make sure that PBIS is installed
 if ! rpm -qa | grep -qw pbis-open; then
     yum -y install $package
@@ -46,7 +52,6 @@ if [[ $(fgrep -ix $domain <<< $joined) ]]; then
     echo "`date -u ` This host is already joined to $domain" >> $dom_join_log;
 else
 domainjoin-cli  --logfile $dom_join_log --loglevel verbose join --ou $ou $domain $dom_user $dom_pass
-sleep 20 
 fi
 
 #Verify Domin Join
