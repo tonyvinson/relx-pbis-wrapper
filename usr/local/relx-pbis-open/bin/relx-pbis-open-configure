@@ -44,11 +44,6 @@ chkconfig relx-pbis-wrapper on
 
 fi
 
-#Update DNS
-echo "`date -u ` Updating DNS record" >> $dom_join_log;
-/opt/pbis/bin/update-dns >> $dom_join_log;
-#Run the line below to debug
-#/opt/pbis/bin/update-dns --loglevel debug >> $dom_join_log;
 
 
 # Join the domain if not joined exit if joined
@@ -71,6 +66,12 @@ else
 echo "`date -u ` Domain join failed check log $dom_join_log" >> $dom_join_log
 exit 1; 
 fi
+
+#Update DNS
+echo "`date -u ` Updating DNS record" >> $dom_join_log;
+/opt/pbis/bin/update-dns >> $dom_join_log;
+#Run the line below to debug
+#/opt/pbis/bin/update-dns --loglevel debug >> $dom_join_log;
 
 # Set default user shell to bash
 #if [[ $(fgrep -ix $shell_conf <<< $shell) ]]; then
