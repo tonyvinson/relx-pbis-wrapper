@@ -1,6 +1,6 @@
 #!/bin/bash
 #Author: Tony Vinson (vinsontx@lexisnexis.com)
-#Edited on 16 March 2017
+#Edited on 17 March 2017
 # chkconfig: 345 99 10
 # description: start and configure PBIS for newlexis domain
 #
@@ -42,9 +42,17 @@ echo "`date -u ` PBIS is running!!!" >> $dom_join_log
 else
 echo "`date -u ` Starting PBIS !!!" >> $dom_join_log
 /etc/init.d/$service start
+
 #Enable this script for boot time
 chkconfig relx-pbis-wrapper on
+
 fi
+
+#Update DNS
+echo "`date -u ` Updating DNS record" >> $dom_join_log;
+/opt/pbis/bin/update-dns --loglevel debug >> $dom_join_log;
+#Run the line below to debug
+#/opt/pbis/bin/update-dns --loglevel debug >> $dom_join_log;
 
 # Join the domain if not joined exit if joined
 shell_conf=`/opt/pbis/bin/config --show LoginShellTemplate | grep bash`
@@ -101,7 +109,8 @@ if [ -f /etc/sudoers.d/${cloud}_admin ]; then
   cp  /etc/sudoers.d/${cloud}_admin  /etc/sudoers.d/${cloud}_admin.bak
   echo "`date -u ` Backing up existing /etc/sudoers.d/${cloud}_admin to /etc/sudoers.d/${cloud}_admin.bak" >> $dom_join_log
 fi  
-  cp  $sudo_template  /etc/sudoers.d/${cloud}_admin
+
+cp  $sudo_template  /etc/sudoers.d/${cloud}_admin
 
 case "$cloud" in 
 
