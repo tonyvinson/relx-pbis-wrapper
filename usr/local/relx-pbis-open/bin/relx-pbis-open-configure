@@ -1,19 +1,20 @@
 #!/bin/bash
 #Author: Tony Vinson (vinsontx@lexisnexis.com)
-#Edited on 16 March 2017
+#Edited on 17 March 2017
 # chkconfig: 345 99 10
 # description: start and configure PBIS for newlexis domain
 #
 service=lwsmd
 domain=newlexis.net
 domain_nb=NEWLEXIS
-ou=Servers/LNG/NewLexis
 dom_user=ln-svc-DomJoiner
 dom_pass=\!\!J10ner
 dom_join_log=/usr/local/relx-pbis-open/tmp/domain_join.log
 shell=/bin/bash
 assume_domain=true
 cloud=`/opt/aws/bin/ec2-metadata | grep keyname | cut -d : -f2`
+lifecycle=`/opt/aws/bin/ec2-metadata | grep keyname | cut -d : -f2 |cut -d - -f3`
+ou=Servers/LNG/NewLexis/$lifecycle
 sudo_template=/usr/local/relx-pbis-open/share/domain_admin
 package1="/usr/local/relx-pbis-open/share/pbis-open-8.5.2-265.x86_64.rpm"
 package2="/usr/local/relx-pbis-open/share/pbis-open-upgrade-8.5.2-265.x86_64.rpm"
@@ -39,11 +40,11 @@ echo "`date -u ` PBIS is running!!!" >> $dom_join_log
 else
 echo "`date -u ` Starting PBIS !!!" >> $dom_join_log
 /etc/init.d/$service start
+
 #Enable this script for boot time
 chkconfig relx-pbis-wrapper on
 
 fi
-
 
 
 # Join the domain if not joined exit if joined
@@ -107,7 +108,8 @@ if [ -f /etc/sudoers.d/${cloud}_admin ]; then
   cp  /etc/sudoers.d/${cloud}_admin  /etc/sudoers.d/${cloud}_admin.bak
   echo "`date -u ` Backing up existing /etc/sudoers.d/${cloud}_admin to /etc/sudoers.d/${cloud}_admin.bak" >> $dom_join_log
 fi  
-  cp  $sudo_template  /etc/sudoers.d/${cloud}_admin
+
+cp  $sudo_template  /etc/sudoers.d/${cloud}_admin
 
 case "$cloud" in 
 
@@ -115,7 +117,7 @@ product-nl-dev)
   ad_group1=LN-NewLexis-Dev-L1
   ad_group2=LN-NewLexis-Dev-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-echo "%$domain_nb\\$ad_group1 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+#echo "%$domain_nb\\$ad_group1 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 echo "%$domain_nb\\$ad_group2 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
@@ -139,7 +141,7 @@ operations-nl-dev)
   ad_group1=LN-NewLexis-Dev-L1
   ad_group2=LN-NewLexis-Dev-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-echo "%$domain_nb\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+#echo "%$domain_nb\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 echo "%$domain_nb\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
@@ -163,7 +165,7 @@ monitoring-nl-dev)
   ad_group1=LN-NewLexis-Dev-L1
   ad_group2=LN-NewLexis-Dev-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-echo "%$domain_nb\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+#echo "%$domain_nb\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 echo "%$domain_nb\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
@@ -184,3 +186,4 @@ echo "%$domain_nb\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 #/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
 esac
+
