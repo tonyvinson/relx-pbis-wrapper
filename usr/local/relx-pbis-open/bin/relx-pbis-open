@@ -50,7 +50,7 @@ fi
 
 #Update DNS
 echo "`date -u ` Updating DNS record" >> $dom_join_log;
-/opt/pbis/bin/update-dns --loglevel debug >> $dom_join_log;
+/opt/pbis/bin/update-dns >> $dom_join_log;
 #Run the line below to debug
 #/opt/pbis/bin/update-dns --loglevel debug >> $dom_join_log;
 
