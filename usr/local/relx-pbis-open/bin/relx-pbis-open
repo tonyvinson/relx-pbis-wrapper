@@ -48,6 +48,11 @@ chkconfig relx-pbis-wrapper on
 
 fi
 
+#Update DNS
+echo "`date -u ` Updating DNS record" >> $dom_join_log;
+/opt/pbis/bin/update-dns  --nocreds --fqdn `hostname`.$domain >> $dom_join_log;
+#Run the line below to debug
+#/opt/pbis/bin/update-dns --loglevel debug >> $dom_join_log;
 
 # Join the domain if not joined exit if joined
 shell_conf=`/opt/pbis/bin/config --show LoginShellTemplate | grep bash`
