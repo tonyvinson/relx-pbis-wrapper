@@ -127,64 +127,64 @@ product-nl-cert)
   ad_group1=LN-NewLexis-Cert-L1
   ad_group2=LN-NewLexis-Cert-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "%$domain_nb\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
-echo "%$domain_nb\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+#echo "%$domain_nb\\$ad_group1 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "%$domain_nb\\$ad_group2 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 product-nl-prod)
   ad_group1=LN-NewLexis-Prod-L1
   ad_group2=LN-NewLexis-Prod-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "%$domain_nb\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
-echo "%$domain_nb\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+#echo "%$domain_nb\\$ad_group1 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "%$domain_nb\\$ad_group2 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 operations-nl-dev)
   ad_group1=LN-NewLexis-Dev-L1
   ad_group2=LN-NewLexis-Dev-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "%$domain_nb\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
-echo "%$domain_nb\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+#echo "%$domain_nb\\$ad_group1 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "%$domain_nb\\$ad_group2 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 operations-nl-cert)
   ad_group1=LN-NewLexis-Cert-L1
   ad_group2=LN-NewLexis-Cert-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "%$domain_nb\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
-echo "%$domain_nb\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+#echo "%$domain_nb\\$ad_group1 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "%$domain_nb\\$ad_group2 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 operations-nl-prod)
   ad_group1=LN-NewLexis-Prod-L1
   ad_group2=LN-NewLexis-Prod-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "%$domain_nb\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
-echo "%$domain_nb\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+#echo "%$domain_nb\\$ad_group1 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "%$domain_nb\\$ad_group2 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 monitoring-nl-dev)
   ad_group1=LN-NewLexis-Dev-L1
   ad_group2=LN-NewLexis-Dev-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "%$domain_nb\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
-echo "%$domain_nb\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+#echo "%$domain_nb\\$ad_group1 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "%$domain_nb\\$ad_group2 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 monitoring-nl-cert)
   ad_group1=LN-NewLexis-Cert-L1
   ad_group2=LN-NewLexis-Cert-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "%$domain_nb\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
-echo "%$domain_nb\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+#echo "%$domain_nb\\$ad_group1 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "%$domain_nb\\$ad_group2 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 
 monitoring-nl-prod)
   ad_group1=LN-NewLexis-Prod-L1
   ad_group2=LN-NewLexis-Prod-L2
 /opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
-#echo "%$domain_nb\\$ad_group1 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
-echo "%$domain_nb\\$ad_group2 ALL=(ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+#echo "%$domain_nb\\$ad_group1 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
+echo "%$domain_nb\\$ad_group2 ALL=(ALL:ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
 #/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
 esac
