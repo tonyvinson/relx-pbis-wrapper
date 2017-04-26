@@ -20,6 +20,8 @@ ou=Servers/LNG/NewLexis/$lifecycle
 sudo_template=/usr/local/relx-pbis-open/share/domain_admin
 package1="/usr/local/relx-pbis-open/share/pbis-open-8.5.2-265.x86_64.rpm"
 package2="/usr/local/relx-pbis-open/share/pbis-open-upgrade-8.5.2-265.x86_64.rpm"
+auth_keys="/home/ec2-user/.ssh/authorized_keys"
+ssm_pkg=amazon-ssm-agent
 
 # Make sure that PBIS is installed
 if ! rpm -qa | grep -qw pbis-open; then
@@ -191,8 +193,39 @@ monitoring-nl-prod)
 #echo "%$domain_nb\\\\$ad_group1 ALL=(ALL"\:"ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 echo "%$domain_nb\\\\$ad_group2 ALL=(ALL"\:"ALL) ALL" >>  /etc/sudoers.d/${cloud}_admin
 ;;
-#/opt/pbis/bin/config RequireMembershipOf  $domain\\domain^admins $domain\\$ad_group1 $domain\\$ad_group2
 esac
+#Verify Domain Join again
+joined=`domainjoin-cli query | grep Domain | cut -d ' ' -f3`
+if [[ $(fgrep -ix $domain <<< $joined) ]]; then
+    # Make sure that SSM is installed
+    if ! rpm -qa | grep -qw "$ssm_pkg"; then
+       yum -y install "$ssm_pkg"
+        #rpm -ivh  $ssm_pkg
+          if [ $? == 0 ]; then
+          echo "`date -u ` $ssm_pkg was installed" > $dom_join_log
+          else
+          echo "`date -u ` Please ensure that $ssm_pkg exists in your repository" >> $dom_join_log
+          exit 1;
+          fi
+    else
+    echo "`date -u ` $ssm_pkg already installed" > $dom_join_log
+    fi
+
+    # Ensure that the SSM Service is running
+    if (( $( /sbin/status $ssm_pkg | grep running| wc -l) > 0 ))
+    then
+    echo "`date -u ` $ssm_pkg is running!!!" >> $dom_join_log
+    else
+    echo "`date -u ` Starting $ssm_pkg !!!" >> $dom_join_log
+    /sbin/start $ssm_pkg
+    fi
+    # Remove Authkeys File if SSM is Running
+    if (( $( /sbin/status $ssm_pkg | grep running| wc -l) > 0 ))
+    then
+    rm -f $auth_keys
+    echo "`date -u ` $auth_keys removed" >> $dom_join_log
+    fi
+fi
 ;;
 
  'stop')
